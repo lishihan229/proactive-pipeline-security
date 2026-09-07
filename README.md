@@ -20,12 +20,14 @@ python3 -m unittest discover -s tests -v
 python3 -m pipeline_security --staged
 ```
 
-Install the versioned hook configuration after installing `pre-commit`:
+Install the versioned hook configuration after installing `pre-commit` (for example,
+in a project virtual environment):
 
 ```bash
-python3 -m pip install --user pre-commit
-pre-commit install
-pre-commit run --all-files
+python3 -m venv .venv
+.venv/bin/python -m pip install pre-commit
+.venv/bin/pre-commit install
+.venv/bin/pre-commit run --all-files
 ```
 
 ## Optional LLM review

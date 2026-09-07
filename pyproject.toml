@@ -8,5 +8,8 @@ version = "0.1.0"
 description = "Local-first staged-diff security analysis for Git hooks"
 requires-python = ">=3.10"
 
+[project.scripts]
+pipeline-security = "pipeline_security.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]

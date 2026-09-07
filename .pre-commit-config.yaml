@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: pipeline-security
         name: proactive pipeline security
-        entry: python3 -m pipeline_security --staged
+        entry: bash -c 'PYTHONPATH=src python3 -m pipeline_security --staged'
         language: system
         pass_filenames: false
         stages: [pre-commit]
