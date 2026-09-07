@@ -42,5 +42,8 @@ export LLM_API_URL='https://your-provider.example/v1/chat/completions'
 export LLM_MODEL='your-model'
 ```
 
-It is best to use this for warnings and let deterministic rules enforce blocking
-policy. Add redaction and an approved endpoint before enabling it on proprietary code.
+Run it explicitly with `PYTHONPATH=src python3 -m pipeline_security --staged --llm`.
+It is advisory only; deterministic rules enforce blocking policy. The tool redacts
+simple assignment-style credentials and caps the sent content at 12,000 characters,
+but review the exact staged diff and use an approved endpoint before enabling it on
+proprietary code.

@@ -1,6 +1,7 @@
 import unittest
 
 from pipeline_security.rules import scan_text
+from pipeline_security.llm import redact
 
 
 class RuleTests(unittest.TestCase):
@@ -15,3 +16,6 @@ class RuleTests(unittest.TestCase):
     def test_detects_shell_true(self):
         findings = scan_text("worker.py", "subprocess.run(command, shell=True)")  # pps: ignore
         self.assertTrue(any(item.rule == "A03-shell-injection" for item in findings))
+
+    def test_redacts_credentials_before_llm_review(self):
+        self.assertEqual(redact('token = "private-value"'), 'token = "[REDACTED]"')  # pps: ignore
