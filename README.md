@@ -8,16 +8,16 @@ optionally submit a bounded diff to an LLM for contextual review.
 
 1. **Deterministic rules run first.** They are fast, private, and block high-signal
    problems such as hard-coded secrets, `eval`, and shell injection risks.
-2. **The LLM reviewer is opt-in.** It never runs unless `PIPELINE_SECURITY_LLM=1`
-   is set. Review the diff before enabling it, because source code leaves the machine.
+2. **The LLM reviewer is opt-in.** It runs only when `--llm` is supplied. Review
+   the staged content before enabling it, because source code leaves the machine.
 3. **The hook reads Git's index.** The feedback matches what will be committed, not
    un-staged edits in the working tree.
 
 ## Quick start
 
 ```bash
-python3 -m unittest discover -s tests -v
-python3 -m pipeline_security --staged
+PYTHONPATH=src python3 -m unittest discover -s tests -v
+PYTHONPATH=src python3 -m pipeline_security --staged
 ```
 
 Install the versioned hook configuration after installing `pre-commit` (for example,
@@ -30,13 +30,44 @@ python3 -m venv .venv
 .venv/bin/pre-commit run --all-files
 ```
 
+## Use in another repository
+
+PPS is a [pre-commit](https://pre-commit.com/) plugin. After a release tag is
+published, add the following to the consuming repository's
+`.pre-commit-config.yaml` (replace the revision with the release you want to
+use):
+
+```yaml
+repos:
+  - repo: https://github.com/lishihan229/proactive-pipeline-security
+    rev: v0.1.0
+    hooks:
+      - id: pipeline-security
+```
+
+Install the hook once in that repository:
+
+```bash
+python3 -m pip install --user pre-commit
+pre-commit install
+```
+
+Every subsequent `git commit` will scan the repository's staged Python and
+Bash/Shell files. Developers can also run the check manually:
+
+```bash
+pre-commit run pipeline-security --all-files
+```
+
+Use an immutable release tag or commit SHA for `rev`; do not use a moving branch
+such as `main` for team policy.
+
 ## Optional LLM review
 
 The LLM integration is deliberately provider-neutral. Configure an OpenAI-compatible
 chat-completions endpoint, keeping credentials out of Git:
 
 ```bash
-export PIPELINE_SECURITY_LLM=1
 export LLM_API_KEY='...'
 export LLM_API_URL='https://your-provider.example/v1/chat/completions'
 export LLM_MODEL='your-model'

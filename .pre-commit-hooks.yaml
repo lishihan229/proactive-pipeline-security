@@ -1,0 +1,7 @@
+- id: pipeline-security
+  name: proactive pipeline security
+  description: Scan staged Python and Bash files for likely security risks.
+  entry: pipeline-security --staged
+  language: python
+  pass_filenames: false
+  stages: [pre-commit]
